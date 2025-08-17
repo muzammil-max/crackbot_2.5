@@ -39,7 +39,7 @@ const canvafy = require("canvafy");
 const { createCanvas } = require("canvas");
 const math = require("mathjs");
 const plotly = require("plotly");
-const puppeteer = require("puppeteer");
+// const puppeteer = require("puppeteer");
 // const { REST } = require("@discordjs/rest");
 // const { Routes } = require("discord-api-types/v9");
 const axios = require("axios");
@@ -583,237 +583,237 @@ client.on("messageCreate", async (message) => {
 
 //!  FINAL ATTEMPT Graphs Plotter [By Muzammil] FAILED >:(
 
-async function plotGraph(
-  expressions = ["x^2"],
-  filename = "graph.png",
-  is3D = false,
-  isPolar = false
-) {
-  const xValues = Array.from({ length: 500 }, (_, i) => (i - 250) / 50); // X values from -5 to 5
-  const yValues = is3D
-    ? Array.from({ length: 500 }, (_, i) => (i - 250) / 50)
-    : [];
-  const thetaValues = Array.from(
-    { length: 500 },
-    (_, i) => (i * Math.PI * 2) / 500
-  ); // θ from 0 to 2π
+// async function plotGraph(
+//   expressions = ["x^2"],
+//   filename = "graph.png",
+//   is3D = false,
+//   isPolar = false
+// ) {
+//   const xValues = Array.from({ length: 500 }, (_, i) => (i - 250) / 50); // X values from -5 to 5
+//   const yValues = is3D
+//     ? Array.from({ length: 500 }, (_, i) => (i - 250) / 50)
+//     : [];
+//   const thetaValues = Array.from(
+//     { length: 500 },
+//     (_, i) => (i * Math.PI * 2) / 500
+//   ); // θ from 0 to 2π
 
-  const data = isPolar
-    ? expressions.map((expression, index) => {
-        const rValues = thetaValues.map((theta) => {
-          try {
-            // Clean up the expression to ensure proper multiplication handling
-            const fixedExpression = expression
-              .replace(/theta/g, `(${theta})`) // Replace 'theta' with numeric value
-              .replace(/(\d)([a-zA-Z])/g, "$1 * $2") // Add explicit multiplication: 2cos -> 2 * cos
-              .replace(/(\))(\()/g, "$1 * $2"); // Add multiplication between adjacent parentheses
+//   const data = isPolar
+//     ? expressions.map((expression, index) => {
+//         const rValues = thetaValues.map((theta) => {
+//           try {
+//             // Clean up the expression to ensure proper multiplication handling
+//             const fixedExpression = expression
+//               .replace(/theta/g, `(${theta})`) // Replace 'theta' with numeric value
+//               .replace(/(\d)([a-zA-Z])/g, "$1 * $2") // Add explicit multiplication: 2cos -> 2 * cos
+//               .replace(/(\))(\()/g, "$1 * $2"); // Add multiplication between adjacent parentheses
 
-            return math.evaluate(fixedExpression);
-          } catch (error) {
-            console.error("Evaluation error for polar graph:", error);
-            return NaN;
-          }
-        });
-        return {
-          r: rValues,
-          theta: thetaValues.map((theta) => (theta * 180) / Math.PI), // Convert θ to degrees
-          mode: "lines",
-          type: "scatterpolar",
-          name: `Polar Graph ${index + 1}: ${expression}`,
-          line: { width: 2 },
-        };
-      })
-    : is3D
-    ? []
-    : expressions.map((expression, index) => {
-        const yValues = xValues.map((x) => {
-          try {
-            return math.evaluate(expression.replace(/x/g, `(${x})`)); // Evaluate expression for x
-          } catch {
-            return NaN;
-          }
-        });
-        return {
-          x: xValues,
-          y: yValues,
-          mode: "lines",
-          name: `Graph ${index + 1}: ${expression}`,
-          line: { width: 2 },
-        };
-      });
+//             return math.evaluate(fixedExpression);
+//           } catch (error) {
+//             console.error("Evaluation error for polar graph:", error);
+//             return NaN;
+//           }
+//         });
+//         return {
+//           r: rValues,
+//           theta: thetaValues.map((theta) => (theta * 180) / Math.PI), // Convert θ to degrees
+//           mode: "lines",
+//           type: "scatterpolar",
+//           name: `Polar Graph ${index + 1}: ${expression}`,
+//           line: { width: 2 },
+//         };
+//       })
+//     : is3D
+//     ? []
+//     : expressions.map((expression, index) => {
+//         const yValues = xValues.map((x) => {
+//           try {
+//             return math.evaluate(expression.replace(/x/g, `(${x})`)); // Evaluate expression for x
+//           } catch {
+//             return NaN;
+//           }
+//         });
+//         return {
+//           x: xValues,
+//           y: yValues,
+//           mode: "lines",
+//           name: `Graph ${index + 1}: ${expression}`,
+//           line: { width: 2 },
+//         };
+//       });
 
-  if (is3D && !isPolar) {
-    for (let expression of expressions) {
-      const zMatrix = [];
-      for (let x of xValues) {
-        const zRow = [];
-        for (let y of yValues) {
-          try {
-            const z = math.evaluate(
-              expression.replace(/x/g, `(${x})`).replace(/y/g, `(${y})`)
-            );
-            zRow.push(z);
-          } catch {
-            zRow.push(NaN);
-          }
-        }
-        zMatrix.push(zRow);
-      }
-      data.push({
-        x: xValues,
-        y: yValues,
-        z: zMatrix,
-        type: "surface",
-        colorscale: "Earth",
-        showscale: true,
-        name: `3D Graph: ${expression}`,
-      });
-    }
-  }
+//   if (is3D && !isPolar) {
+//     for (let expression of expressions) {
+//       const zMatrix = [];
+//       for (let x of xValues) {
+//         const zRow = [];
+//         for (let y of yValues) {
+//           try {
+//             const z = math.evaluate(
+//               expression.replace(/x/g, `(${x})`).replace(/y/g, `(${y})`)
+//             );
+//             zRow.push(z);
+//           } catch {
+//             zRow.push(NaN);
+//           }
+//         }
+//         zMatrix.push(zRow);
+//       }
+//       data.push({
+//         x: xValues,
+//         y: yValues,
+//         z: zMatrix,
+//         type: "surface",
+//         colorscale: "Earth",
+//         showscale: true,
+//         name: `3D Graph: ${expression}`,
+//       });
+//     }
+//   }
 
-  const layout = isPolar
-    ? {
-        title: "Polar Graph By CrackBot",
-        polar: {
-          radialaxis: { title: "r" },
-          angularaxis: { title: "θ (degrees)" },
-        },
-        width: 800,
-        height: 600,
-      }
-    : is3D
-    ? {
-        title: "3D Graph by CrackBot",
-        scene: {
-          xaxis: { title: "X-axis" },
-          yaxis: { title: "Y-axis" },
-          zaxis: { title: "Z-axis" },
-          camera: { eye: { x: 1.5, y: 1.5, z: 1.5 } },
-        },
-        width: 800,
-        height: 600,
-      }
-    : {
-        title: "2D Graph by CrackBot",
-        xaxis: { title: "X-axis" },
-        yaxis: { title: "Y-axis" },
-        width: 800,
-        height: 600,
-      };
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
+//   const layout = isPolar
+//     ? {
+//         title: "Polar Graph By CrackBot",
+//         polar: {
+//           radialaxis: { title: "r" },
+//           angularaxis: { title: "θ (degrees)" },
+//         },
+//         width: 800,
+//         height: 600,
+//       }
+//     : is3D
+//     ? {
+//         title: "3D Graph by CrackBot",
+//         scene: {
+//           xaxis: { title: "X-axis" },
+//           yaxis: { title: "Y-axis" },
+//           zaxis: { title: "Z-axis" },
+//           camera: { eye: { x: 1.5, y: 1.5, z: 1.5 } },
+//         },
+//         width: 800,
+//         height: 600,
+//       }
+//     : {
+//         title: "2D Graph by CrackBot",
+//         xaxis: { title: "X-axis" },
+//         yaxis: { title: "Y-axis" },
+//         width: 800,
+//         height: 600,
+//       };
+//   const browser = await puppeteer.launch();
+//   const page = await browser.newPage();
 
-  const htmlContent = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    </head>
-    <body>
-        <div id="plot" style="width:800px;height:600px;"></div>
-        <script>
-            const data = ${JSON.stringify(data)};
-            const layout = ${JSON.stringify(layout)};
-            Plotly.newPlot('plot', data, layout);
-        </script>
-    </body>
-    </html>
-  `;
+//   const htmlContent = `
+//     <!DOCTYPE html>
+//     <html>
+//     <head>
+//         <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+//     </head>
+//     <body>
+//         <div id="plot" style="width:800px;height:600px;"></div>
+//         <script>
+//             const data = ${JSON.stringify(data)};
+//             const layout = ${JSON.stringify(layout)};
+//             Plotly.newPlot('plot', data, layout);
+//         </script>
+//     </body>
+//     </html>
+//   `;
 
-  await page.setContent(htmlContent);
-  await page.waitForSelector("#plot", { timeout: 5000 });
-  await page.screenshot({ path: filename });
+//   await page.setContent(htmlContent);
+//   await page.waitForSelector("#plot", { timeout: 5000 });
+//   await page.screenshot({ path: filename });
 
-  await browser.close();
-  return filename;
-}
+//   await browser.close();
+//   return filename;
+// }
 
-//send loading message before making graph
-//  function for loading message
-async function sendLoadingMessage(channel) {
-  const loadingMessage = await channel.send({
-    content:
-      "**Generating graph, please wait...** <a:loading:1317398943713202218>", // Replace with your animated emoji ID
-  });
-  return loadingMessage;
-}
-// Modified command handlers
-client.on("messageCreate", async (message) => {
-  if (message.author.bot) return;
+// //send loading message before making graph
+// //  function for loading message
+// async function sendLoadingMessage(channel) {
+//   const loadingMessage = await channel.send({
+//     content:
+//       "**Generating graph, please wait...** <a:loading:1317398943713202218>", // Replace with your animated emoji ID
+//   });
+//   return loadingMessage;
+// }
+// // Modified command handlers
+// client.on("messageCreate", async (message) => {
+//   if (message.author.bot) return;
 
-  if (message.content.startsWith("!2dgraph ")) {
-    const match = message.content.match(/`([^`]+)`/);
-    let expressions = match
-      ? match[1].split(",").map((expr) => expr.trim())
-      : ["x^2"];
+//   if (message.content.startsWith("!2dgraph ")) {
+//     const match = message.content.match(/`([^`]+)`/);
+//     let expressions = match
+//       ? match[1].split(",").map((expr) => expr.trim())
+//       : ["x^2"];
 
-    //? Awaz ne aye ab teri
+//     //? Awaz ne aye ab teri
 
-    const loadingMessage = await sendLoadingMessage(message.channel);
+//     const loadingMessage = await sendLoadingMessage(message.channel);
 
-    try {
-      const filename = await plotGraph(expressions, "graph.png", false, false);
-      await loadingMessage.delete(); // Remove the loading message
-      await message.channel.send({
-        files: [{ attachment: filename, name: "graph.png" }],
-      });
-    } catch (error) {
-      console.error(error);
-      await loadingMessage.edit(
-        "❌ There was an error generating the 2D graph."
-      );
-    }
-  }
+//     try {
+//       const filename = await plotGraph(expressions, "graph.png", false, false);
+//       await loadingMessage.delete(); // Remove the loading message
+//       await message.channel.send({
+//         files: [{ attachment: filename, name: "graph.png" }],
+//       });
+//     } catch (error) {
+//       console.error(error);
+//       await loadingMessage.edit(
+//         "❌ There was an error generating the 2D graph."
+//       );
+//     }
+//   }
 
-  if (message.content.startsWith("!3dgraph ")) {
-    const match = message.content.match(/`([^`]+)`/);
-    let expressions = match
-      ? match[1].split(",").map((expr) => expr.trim())
-      : ["x^2 + y^2"];
+//   if (message.content.startsWith("!3dgraph ")) {
+//     const match = message.content.match(/`([^`]+)`/);
+//     let expressions = match
+//       ? match[1].split(",").map((expr) => expr.trim())
+//       : ["x^2 + y^2"];
 
-    const loadingMessage = await sendLoadingMessage(message.channel);
+//     const loadingMessage = await sendLoadingMessage(message.channel);
 
-    try {
-      const filename = await plotGraph(expressions, "graph.png", true, false);
-      await loadingMessage.delete(); // Remove the loading message
-      await message.channel.send({
-        files: [{ attachment: filename, name: "graph.png" }],
-      });
-    } catch (error) {
-      console.error(error);
-      await loadingMessage.edit(
-        "❌ There was an error generating the 3D graph."
-      );
-    }
-  }
+//     try {
+//       const filename = await plotGraph(expressions, "graph.png", true, false);
+//       await loadingMessage.delete(); // Remove the loading message
+//       await message.channel.send({
+//         files: [{ attachment: filename, name: "graph.png" }],
+//       });
+//     } catch (error) {
+//       console.error(error);
+//       await loadingMessage.edit(
+//         "❌ There was an error generating the 3D graph."
+//       );
+//     }
+//   }
 
-  if (message.content.startsWith("!polargraph ")) {
-    const match = message.content.match(/`([^`]+)`/);
-    let expressions = match
-      ? match[1].split(",").map((expr) => expr.trim())
-      : ["cos(θ)"];
+//   if (message.content.startsWith("!polargraph ")) {
+//     const match = message.content.match(/`([^`]+)`/);
+//     let expressions = match
+//       ? match[1].split(",").map((expr) => expr.trim())
+//       : ["cos(θ)"];
 
-    const loadingMessage = await sendLoadingMessage(message.channel);
+//     const loadingMessage = await sendLoadingMessage(message.channel);
 
-    try {
-      const filename = await plotGraph(
-        expressions,
-        "polar_graph.png",
-        false,
-        true
-      );
-      await loadingMessage.delete(); // Remove the loading message
-      await message.channel.send({
-        files: [{ attachment: filename, name: "polar_graph.png" }],
-      });
-    } catch (error) {
-      console.error(error);
-      await loadingMessage.edit(
-        "❌ There was an error generating the polar graph."
-      );
-    }
-  }
-});
+//     try {
+//       const filename = await plotGraph(
+//         expressions,
+//         "polar_graph.png",
+//         false,
+//         true
+//       );
+//       await loadingMessage.delete(); // Remove the loading message
+//       await message.channel.send({
+//         files: [{ attachment: filename, name: "polar_graph.png" }],
+//       });
+//     } catch (error) {
+//       console.error(error);
+//       await loadingMessage.edit(
+//         "❌ There was an error generating the polar graph."
+//       );
+//     }
+//   }
+// });
 
 //? Graph Maker 7th attempt (FAILED)
 // async function plotGraph(
